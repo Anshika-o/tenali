@@ -390,7 +390,7 @@ export default function BattleApp({ onBack, initialTopic }) {
       socket.off('cellResult'); socket.off('sudokuForcedEnd')
       clearInterval(timerRef.current)
     }
-  }, [myId, players])
+  }, [myId, players, resetToLobby])
 
   const resetToLobby = useCallback(() => {
     setPhase('lobby')
