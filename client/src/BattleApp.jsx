@@ -168,7 +168,6 @@ function Timer({ timeLeft, totalDuration = 15000 }) {
   else if (timeLeft <= 10) { color = 'var(--clr-accent)' }
   if (timeLeft <= 5) barClass = 'bar-urgent'
   else if (timeLeft <= 10) barClass = 'bar-warning'
-
   return (
     <>
       <style jsx>{`
@@ -249,6 +248,24 @@ export default function BattleApp({ onBack, initialTopic }) {
       socket.emit('getOpenRooms')
     }
     return () => { socket.off('connect'); socket.off('openRooms') }
+  }, [])
+const resetToLobby = useCallback(() => {
+    setPhase('lobby')
+    setRoomCode('')
+    setPlayers([])
+    setQuestion(null)
+    setAnswer('')
+    setScores([])
+    setRoundWinner(null)
+    setRoundPlayers([])
+    setSudokuPuzzle(null)
+    setSudokuGrid(null)
+    setSudokuRaceActive(false)
+    setSudokuWrongCount(0)
+    setSudokuSelectedCell(null)
+    setSudokuOpponentFinished(false)
+    clearInterval(timerRef.current)
+    setTimeout(() => socket.emit('getOpenRooms'), 100)
   }, [])
 
   useEffect(() => {
@@ -361,25 +378,7 @@ export default function BattleApp({ onBack, initialTopic }) {
     }
    }, [myId, players, resetToLobby])
 
-  const resetToLobby = useCallback(() => {
-    setPhase('lobby')
-    setRoomCode('')
-    setPlayers([])
-    setQuestion(null)
-    setAnswer('')
-    setScores([])
-    setRoundWinner(null)
-    setRoundPlayers([])
-    setSudokuPuzzle(null)
-    setSudokuGrid(null)
-    setSudokuRaceActive(false)
-    setSudokuWrongCount(0)
-    setSudokuSelectedCell(null)
-    setSudokuOpponentFinished(false)
-    clearInterval(timerRef.current)
-    setTimeout(() => socket.emit('getOpenRooms'), 100)
-  }, [])
-
+  
   const handleCreate = useCallback(() => {
     setError('')
     socket.emit('createRoom', { name: name.trim() || 'Player', topic, numQuestions }, ({ ok, code, players: p, error: e }) => {
